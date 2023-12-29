@@ -25,11 +25,18 @@ def lire_yaml(fichier):
     parameter:
         fichier: Chemin du fichier .yaml à lire
     """
-    with codecs.open(fichier, 'r',"utf-8") as stream:
-        try:
-            return load(stream, Loader=Loader)
-        except yaml.YAMLError as exc:
-            print(exc)
+    try:
+        with codecs.open(fichier, 'r',"utf-8") as stream:
+            try:
+                return load(stream, Loader=Loader)
+            except yaml.YAMLError as exc:
+                print(exc)
+    except:
+        with codecs.open(fichier, 'r',"latin-1") as stream:
+            try:
+                return load(stream, Loader=Loader)
+            except yaml.YAMLError as exc:
+                print(exc)
 
 def csv_to_yaml(fichier):
     """
