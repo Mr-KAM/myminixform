@@ -24,8 +24,8 @@ Le principe d'utilisation est simple: creer un fichier minixform en yaml le conv
 
 ```mermaid
 graph TD
-	yaml[Fichier yaml formaté en minixform \n formulaire_minixform.yaml]--> minixform[Conversion du formulaire avec minixform: \n from minixform import * \n form=Questionnaire_yaml('formulaire_minixform.yaml') \n form.to_xslform('formulaire_xlsform.xlsx')]
-	minixform-->xlsform[Fichier xlsform prèt à être deployé: \n formulaire_xlsform.xlsx]
+  yaml--> myminixform
+  myminixform-->xlsform
 ```
 
 ### Creation d'un formulaire minixform
