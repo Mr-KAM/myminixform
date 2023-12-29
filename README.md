@@ -15,7 +15,7 @@ Un Builder est intégré à <b>KOBOTOOLBOX</b> et ODK Build permet de réaliser 
 Il suffit de tapper la commande suivante dans votre terminal:
 
 ```bash
-pip install minixform
+pip install myminixform
 ```
 
 ## Utilisation
@@ -281,13 +281,13 @@ pew workon venv
 Puis installer minixform
 
 ```bash
-pip install minixform
+pip install myminixform
 ```
 
 Creer ensuite le fichier yaml du formulaire **formulaire.yaml** et le fichier de script python **main.py**.
 
 ```python
-from minixform import *
+from myminixform import *
 form = yaml_form("formulaire.yaml")
 resultat = form.to_xslform("formulaire.xlsx")
 ```
