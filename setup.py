@@ -5,7 +5,7 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text(encoding='utf8')
 setup(
     name='myminixform',
-    version='1.0.0',
+    version='1.0.1',
     url="https://github.com/Mr-KAM/myminixform",
     homepage="https://github.com/Mr-KAM/myminixform",
     author='La centrale cognitive',
