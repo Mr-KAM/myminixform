@@ -1,0 +1,33 @@
+[project]
+name = "myminixform"
+version = "1.0.1"
+dependencies = [
+    'pandas', 
+    'openpyxl',
+    'humre',
+    'PyYAML'
+]
+requires-python = ">=3.6"
+authors = [
+  {name = "La centrale cognitive", email = "lacentrale.cognitive@gmail.com"},
+  {name = "mr_kam", email = "kanicetcyrille@gmail.com"},
+]
+maintainers = [
+  {name = "mr_kam", email = "kanicetcyrille@gmail.com"}
+]
+description = "Un package python pour creer un formulaire XLSFORM à partir d'un fichier YAML"
+readme = "README.md"
+license = {file = "LICENSE.txt"}
+keywords = ["formulaire", "XLSFORM", "minixform", "python", "kobo", "ODK"]
+classifiers = [
+    'Programming Language :: Python :: 3',
+    'License :: OSI Approved :: MIT License',
+    'Operating System :: OS Independent',
+    "Topic :: Software Development :: Build Tools",
+]
+
+[project.urls]
+Homepage = "https://github.com/Mr-KAM/myminixform"
+Documentation = "https://github.com/Mr-KAM/myminixform"
+Repository = "https://github.com/Mr-KAM/myminixform.git"
+"Bug Tracker" = "https://github.com/Mr-KAM/myminixform/issues"
