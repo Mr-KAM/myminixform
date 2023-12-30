@@ -19,24 +19,17 @@ except ImportError:
 # 〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
 # [2] [Definition des fonctions ]
 # 〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
-def lire_yaml(fichier):
+def lire_yaml(fichier,encoding="utf-8"):
     """
     Lecture de fichier .yaml
     parameter:
         fichier: Chemin du fichier .yaml à lire
     """
-    try:
-        with codecs.open(fichier, 'r',"utf-8") as stream:
-            try:
-                return load(stream, Loader=Loader)
-            except yaml.YAMLError as exc:
-                print(exc)
-    except:
-        with codecs.open(fichier, 'r',"latin-1") as stream:
-            try:
-                return load(stream, Loader=Loader)
-            except yaml.YAMLError as exc:
-                print(exc)
+    with codecs.open(fichier, 'r',encoding) as stream:
+        try:
+            return load(stream, Loader=Loader)
+        except yaml.YAMLError as exc:
+            print(exc)
 
 def csv_to_yaml(fichier):
     """
@@ -568,10 +561,10 @@ class yaml_form(Question):
     Convertir un fichier formaté en yaml en un questionnaire respectant 
     la logique de syntaxe de XLSFORM
     """
-    def __init__(self,filepath=None):
+    def __init__(self,filepath=None,encoding="utf-8"):
         self.filename=filepath
         self.g_questions=[]
-        self.questionnaire=lire_yaml(filepath)
+        self.questionnaire=lire_yaml(filepath,encoding)
         self.feuilles_excel = ["survey", "choices", "settings"]
         self.source_externe_choix=csv_externe(self.questionnaire["choix"])
         self.questionnaire_edite=add_source_externe(self.questionnaire)

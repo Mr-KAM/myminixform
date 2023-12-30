@@ -288,8 +288,10 @@ Creer ensuite le fichier yaml du formulaire **formulaire.yaml** et le fichier de
 
 ```python
 from myminixform import *
-form = yaml_form("formulaire.yaml")
-resultat = form.to_xslform("formulaire.xlsx")
+print(template, file=open("Template.yaml","a",encoding="utf-8")) #Template est un exemple yaml intégré à myminixform
+form=yaml_form("Template.yaml","utf-8")
+resultat=form.to_xslform("form.xlsx")
+print(result) # True
 ```
 
 Pour executer le script, il suffit de faire
