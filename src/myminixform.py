@@ -5,6 +5,7 @@
 # 〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
 from __future__ import unicode_literals
 import pandas as pd
+from rich import print
 import re
 import codecs
 import openpyxl
@@ -88,7 +89,9 @@ def yaml_to_csv(yaml_data):
     for item in data:
         output.append(item.values())
     return output
-
+#===================================================================================================
+#@VARIABLE "xform_types" 
+# QUI REPRESENTE LA LISTE DES TYPES DE QUESTIONS XLSFORM ET LEURS EQUIVALENT MINIXFORM.
 xform_types = """
             integer,i
             integer,e
@@ -105,7 +108,6 @@ xform_types = """
             select_one,s1
             select_one,liste_u
             select_one,lu
-            select_one,liste u
             select_multiple,sm
             select_multiple,lm
             select_one_from_file,sof
@@ -125,7 +127,7 @@ xform_types = """
             image,img
             audio,audio
             audio,o
-            background-audio,bg-audio
+            background-audio,bg_audio
             video,video
             video,v
             file,f
@@ -143,26 +145,41 @@ xform_types = """
             end_repeat,er
             end_repeat,endr
         """
-
+#===================================================================================================
+#@VARIABLE "template" 
+# QUI REPRESENTE UN EXEMPLE DE TEMPLATE YAML FORMATE EN MINIXFORM.
 template="""
 parametres:
-  titre: Questionnaire coopérative PPCA
+  titre: Titre du questionnaire
   description: >
-    L'objectif de l'étude est d'identifier les contraintes majeures à l'adoption des technologies et innovations dans le domaine agricole, afin de proposer une stratégie de diffusion optimisant leur adoption. 
+    Il s'agit d'un modele de questionnaire yaml à utiliser avec MiniXform. 
+
+
   date: 2023-05-04
-  auteur: 
-    - Nom: KAMA
-      Prenom: Berté
-      Email: bertekama@yahoo.fr
-      Tel: 07-07-77-11-99/05-44-44-74-98
+  auteur:
+    - Nom: Nom de l'auteur
+      Prenom: Prenom auteur
+      Email: email.auteur@mail.com
+      Tel: tel_auteur
   serveur:
-  metadata: [start,end,today,deviceid,phonenumber,username,email,audit,simserial]
+  metadata: # Les metadata sont des informations recuperé automatiquement sur le telephone de l'enqueteur
+    [
+      start,
+      end,
+      today,
+      deviceid,
+      phonenumber,
+      username,
+      email,
+      audit,
+      simserial,
+    ]
 choix:
   sexe: &sexe
     - Homme
     - Femme
-  bool: &bool [Oui,Non]
-  ages: &age [18-25,26-35,36-45,46-55,56 et plus ]
+  bool: &bool [Oui, Non]
+  ages: &age [18-25, 26-35, 36-45, 46-55, 56 et plus]
   structures: &structures
     - CNRA
     - ANADER
@@ -170,7 +187,7 @@ choix:
     - ONG
     - OPA
     - Autre
-  regions: &regions 
+  regions: &regions
     - Abidjan
     - N'Zi
     - Iffou
@@ -178,7 +195,7 @@ choix:
     - Moronou
     - Indénié-Djuablin
     - Sud-Comoé
-  departement : &departs
+  departement: &departs
     - Agboville
     - Sikensi
     - Taabo
@@ -186,47 +203,36 @@ choix:
     - Koro
     - Ouaninou
 
-
-
 questions:
   I:
     titre: DESCRIPTION DE L'ETUDE
     description: >
-       <b>Objectif générale : </b>
-        <br>
-        L'objectif de l'étude est d'identifier les contraintes majeures à l'adoption des technologies et innovations 
-        dans le domaine agricole, afin de proposer une stratégie de diffusion optimisant leur adoption. _note
-        Objectifs spécifiques:
-        Plus spécifiquement, il s'agira de : 
-        - évaluer les principaux mécanismes de génération et de transferts d'innovations et de bonnes pratiques agricoles ; 
-        - identifier les contraintes rencontrées dans le transfert et l'adoption des technologies et innovations ; 
-        - proposer des solutions pour améliorer le transfert et l'adoption des innovations dans le contexte des systèmes de production ivoirien.
-        <br>
-        <b>Resultat attendu:</b>
-        Au terme de l'étude, les résultats attendus sont : 
-        - un rapport est produit décrivant les mécanismes de génération et transfert des innovations 
-        - des propositions pertinentes pour optimiser la diffusion et l'adoption des innovations 
-        - les conclusions de l'étude sont restituées aux parties prenantes 
+      <b>Objectif générale : </b>
+       <br>
+       L'objectif de l'étude est d'identifier les contraintes majeures à l'adoption des technologies et innovations 
+       dans le domaine agricole, afin de proposer une stratégie de diffusion optimisant leur adoption. _note
+
+
     object_questionnaire: >
-      - Identifier des innovations et technologies générées et diffusées ou non dans le cadre du FCIAD
-      - Identifier les mécanismes de génération et de transfert de ces innovations
-      - Forces et faiblesses de ces mécanismes
-      - Quelques recommandations d'amélioration des mécanismes
+      - Identifier des innovations et technologies générées et diffusées ou non dans le cadre du FCIAD - Identifier les mécanismes de génération et de transfert de ces innovations - Forces et faiblesses de ces mécanismes - Quelques recommandations d'amélioration des mécanismes
+
   A:
     titre: >
-       A: IDENTIFICATION DE L'ENQUETE
+      A: IDENTIFICATION DE L'ENQUETE
+
+
     2: A.1 Date d'enquete (………/05/2023) _date
-    3: A.2 Nom  
+    3: A.2 Nom
     4: A.3 Prénoms
-    5: 
+    5:
       - A.5 Sexe ()
       - *sexe
     6: A.6 Tranche âge () $[18-25,26-35,36-45,46-55,56 et plus ] _s1
     7: A.7 Niveau étude () _s1 $[Sans niveau ,coranique ,Primaire,  Secondaire général, Secondaire technique ,Supérieur]
-    8: 
-      - A.8 Région 
+    8:
+      - A.8 Région
       - *regions
-    9: 
+    9:
       - A.9 Département
       - *departs
     10: A.10 Ville/village  ()
@@ -239,13 +245,13 @@ questions:
     15: A.15 Taille de l'activité de la chaine de valeur ( En Hectares) _e
     16: A.16 Nombre d'années dans l'activité de la chaine de valeur () _e
 
-  B: 
+  B:
     titre: B. EVALUATION DE L'ENVIRONNEMENT
     1:
       - B.1 Avez-vous déjà adopté d'autres innovations avant celle sous étude ?
       - *bool
     2:
-      - Si oui, quelles ont été les structures de diffusion ? $si(III_A=Oui)
+      - Si oui, quelles ont été les structures de diffusion ?() $si(III_A=Oui)
       - *structures
     table-1:
       legende: B.2 En général comment appréciez-vous les interventions de ces structures ?
@@ -258,71 +264,75 @@ questions:
         - Autre () _s1 $[Très satisfaisant, Satisfaisant, Peu satisfaisant, Pas du tout satisfaisant]
       lignes: [1]
     3: B.3 Comment avez-vous été informé(e) de l'innovation du projet FCIAD dont vous a été bénéficiaire ?
-    4: 
+    4:
       - B.4 Avez-vous été d'une manière ou d'une autre associé à l'identification du problème qui a permis de générer l'innovation dont vous êtes bénéficiaire ?
       - *bool
-    5: B.5 Si oui, dans quel cadre ? $[ Votre OPA , Consultation individuelle] $si(III_3=oui)
+    5: B.5 Si oui, dans quel cadre ?() $[ Votre OPA , Consultation individuelle] $si(III_3=oui)
     6: Si autre préciser()
-# ---
+  # ---
   C:
     titre: >
       C. INNOVATIONS ADOPTEES
+
+
     note: >
       Identification de l'innovation ou la technologie adoptée dans le cadre du FCIAD () _note
-    1: 
-      - Nature de l'innovation dont vous avez bénéficié. () _s1
-      - [C.1	Production, Transformation, Valorisation]
+
+
+    1:
+      - C.1 Nature de l'innovation dont vous avez bénéficié. () _s1
+      - [Production, Transformation, Valorisation]
     2: C.2	Période de diffusion()	_date
     3: C.3	Difficultés rencontrées pendant l'adoption	()
     4: C.4	Maîtrise de l'innovation à ce jour ()	_s1 $[Bien maîtrisée,Peu maîtrisée,Pas encore maîtrisée]
     5: C.5	Si peu ou pas maîtrisée, quelles sont les causes ? () _s1 $[Formation insuffisante, Ressources matérielles insuffisantes,Autre]
-    5a: Si autres, préciser () 
+    5a: Si autres, préciser ()
     6: C.6Si vous avez abandonné l'innovation, après combien de temps  d'essai ? () _s1 $[Mois, Campagnes, Années]
     7: causes de l'abandon ()
-# ---
-  D: 
+  # ---
+  D:
     titre: D. EVALUATION DE LA PERTINENCE
-    1: D.1 .Pouvez-vous évaluer le niveau de pertinence de l'Innovation & technologie ? _s1 $[Très pertinent,	pertinent,	Peu pertinent,	Pas pertinent	NSP]
+    1: D.1 .Pouvez-vous évaluer le niveau de pertinence de l'Innovation & technologie ?() _s1 $[Très pertinent,	pertinent,	Peu pertinent,	Pas pertinent NSP]
 
-    2: 
-      - D.2. Globalement Pensez-vous que l'innovation répondait à vos besoins ? _s1
+    2:
+      - D.2. Globalement Pensez-vous que l'innovation répondait à vos besoins ?() _s1
       - *bool
-    3: 
+    3:
       - >
         Si oui, pensez-vous qu'elle : () 
-      - 
-        - introduit peu de changement sur l'exploitation	
-        - permet de résoudre un problème sectoriel et a des répercussions sur l'ensemble de l'exploitation	
-        - implique l'adoption simultanée de diverses techniques cohérentes entre elles	
+
+      - - introduit peu de changement sur l'exploitation
+        - permet de résoudre un problème sectoriel et a des répercussions sur l'ensemble de l'exploitation
+        - implique l'adoption simultanée de diverses techniques cohérentes entre elles
         - Autre
     4: Si l'innovation repondait à un autre besoins, précisez le. ()
-# ----------------------------------------------------------------
+  # ----------------------------------------------------------------
   E:
     titre: E. EVALUATION DE L'EFFICACITE
-    table-1: 
+    table-1:
       legende: E.1	Si l'innovations a quelque peu répondu à vos besoins, quel impact sur votre activité ? (Justifiez votre réponse en donnant des chiffres avant et après l'adoption de l'innovation)
-      colonnes: [Avant (Chiffre) _e, Après ( Chiffre) _e ]
+      colonnes: [Avant (Chiffre) _e, Après ( Chiffre) _e]
       lignes:
         - Gain de productivité
         - Gain de qualité
         - Gain de temps
         - Gain de revenu supplémentaire
         - Autre impact sur votre activité
-# --------------------------------
-  F: 
+  # --------------------------------
+  F:
     titre: F	EVALUATION DU MECANISME DE TRANSFERT DES INNOVATIONS GENEREES A LA VULGARISATION ET DE LA DURABILITE
     1: F.1	L'innovation part du chercheur au vulgarisateur. Comment passe-t-elle du vulgarisateur à vous? ()
-    2: 
+    2:
       - F.2	Avez-vous noté quelques difficultés de la diffusion de l'innovation?()
       - *bool
-    2b: Si oui, lesquelles ?() 
+    2b: Si oui, lesquelles ?()
     3:
       - F.3	Rencontrez-vous des difficultés à maintenir l'innovation dans votre activité ?()
       - *bool
     3b: Si oui, lesquelles ? ()
     4: F.4 Selon vous, quelles sont les faiblesses qui pourraient entacher la pérennisation de l'adoption des innovations en général ? ()
-# ----------------------------------------------------------------
-  G: 
+  # ----------------------------------------------------------------
+  G:
     titre: G. VOS RECOMMANDATIONS
     1: G.1	Au vu de tout ce qui précède, quelles recommandations pouvez-vous faire pour l'amélioration du mécanisme de diffusion et de transfert des innovations aux bénéficiaires ? ()
     2: G.2	Selon vous, que faut-il faire pour que les innovations ne soient pas abandonnées après leur adoption par vous après un moment donné ?()
@@ -334,6 +344,11 @@ questions:
 # [3] [Definition des class ]
 # 〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
 
+
+#===================================================================================================
+#++++ OBJET "Question" POUR CONVERTIR UNE QUESTION FORMATER EN MINIXFORM 
+# Il prend en parametre une chaine de caractère "texte"
+# qui correspond à la question formaté en minixform.
 class Question:
     """
         Objet question
@@ -553,7 +568,10 @@ class Question:
             
         return dico
 
-
+#===================================================================================================
+#++++ OBJET "yaml_form(Question)" POUR CONVERTIR UN FICHIER YAML EN UN FORMULAIRE XLSFORM
+# Cet objet herite de Question et prend en parametre "filepath" 
+# qui est le chemin d'accès au fichier '*.yaml' à convertir.
 class yaml_form(Question):
     """
     Objet questionnaire yaml:
@@ -577,6 +595,8 @@ class yaml_form(Question):
         self.xls_choices=""
         self.xls_survey=""
 
+#===================================================================================================
+#@METHODE POUR CONVERTIR CHAQUE GROUPE EN DICTIONNAIRE
     def groupe_to_dic(self,groupe="",name="",repeat=None):
         """
         Conversion des questions du groupe yaml en dictionnaires formatés.
@@ -587,21 +607,29 @@ class yaml_form(Question):
         Output :
             -self.g_questions : list, valeur actualisée la propriété g_questions ( Liste de dictionnaire de questions)
         """
-
-        if "titre" in groupe:
-            q=Question(groupe["titre"])
-            if repeat!= None:
+#-------------------------------------------------------------------------------------------------------
+#=== Detection du type de groupe
+        type_of_groupe="simple" #on commence par supposer qu'il s'agit d'un groupe simple entre en parametre
+        if ("titre" or "title") in groupe: # Cette condition est vrai s'il exiwte une question de nom "titre" ou title dans le groupe
+            try:
+                q=Question(groupe["titre"])
+            except:
+                q=Question(groupe["title"])
+            if repeat!= None: # Est vrai si la nature du groupe est de type repeat. "repeat" ici est un parametre de la fonction group_to_dic
+                type_of_groupe="repeat" # On change type_of_groupe à repeat si c'est un repeate groupe
                 q.type="begin_repeat"
                 if type(repeat)==type(1):
                     q.repeat_count=repeat if int(repeat)>1 else ""
                 else:
-                    q.repeat_count=f"${{ repear}}"
+                    q.repeat_count=f"${{repeat}}"
             else:
+                type_of_groupe="simple"
                 q.type="begin_group"
             q.name=name
             self.g_questions.append(q.formated())
             groupe.pop("titre")
-
+#-------------------------------------------------------------------------------------------------------
+#=== Ajout de la description au groupe
         if "description" in groupe:
             q=Question(groupe["description"])
             q.name=name+"_"+"description"
@@ -609,22 +637,55 @@ class yaml_form(Question):
             q.readonly=True
             self.g_questions.append(q.formated())
             groupe.pop("description")
+        # Après avoir detecté le type de groupe et avoir ajouté le titre du groupe et sa description au dictionnaire
+        # Nous allons maintenant parser chaques queestions et les ajouter au dictionnaire
+#-------------------------------------------------------------------------------------------------------
+# === Ajout des questionnaire du groupe au dictionnaire
         for k in groupe:
-            if (type(groupe[k])==type([""])) and (type(groupe[k][1])==type([""])):
+#-------------------------------------------------------------------------------------------------------
+# === Detection et ajout de question de type select_one ou multiple de type simple
+            if (type(groupe[k])==type([""])) and (type(groupe[k][1])==type([""])): #if true alors question de type "select"
+                
+                """
+                modèle de type
+                    5: 
+                        - A.5 Sexe ()
+                        - *sexe
+                """
                 q=Question(groupe[k][0])
                 q.name=name+"_"+str(k)
                 q.choice=groupe[k][1]
                 if q.type==None:q.type="select_multiple"
                 q.type=q.type+" choix_"+q.name
                 self.g_questions.append(q.formated())
-            elif type(groupe[k])==type(""):
+
+#-------------------------------------------------------------------------------------------------------
+# === Detection et ajout de question de type select_one ou multiple de type complexe              
+            elif type(groupe[k])==type(""): #if true alors question de type "select ou non select"
+                
                 q=Question(groupe[k])
                 q.name=name+"_"+str(k)
-                if q.type==None:q.type="text"
+                
+                if not(len(q.formated()[1])==0): #if true alors question de type "select"
+                    """
+                    modèle de type
+                        6: A.6 Tranche âge () $[18-25,26-35,36-45,46-55,56 et plus ] _s1
+                    """
+                    if q.type==None:q.type="select_multiple"
+                    q.type=q.type+" choix_"+q.name
+#-------------------------------------------------------------------------------------------------------
+# === Detection et ajout de question de type text au cas ou aucun type n'est spécifié dans le yaml        
+                else: # sinon alors question de type non select
+                    if q.type==None:q.type="text"
+                    
                 self.g_questions.append(q.formated())
+                
             elif type(groupe[k])==type([""]) and type(groupe[k][1])==type(" "):
                 pass
+#-------------------------------------------------------------------------------------------------------
+# === Detection et ajout de question de type, group et repeat_group      
             elif type(groupe[k])==type([""]) and type(groupe[k][1])==type({"1":" ", "2":""}):
+                
                 name2=name+"_"+str(k)
                 if "g" in groupe[k][1]:
                     groupe[k][1]["g"]["titre"]=groupe[k][0]
@@ -637,7 +698,10 @@ class yaml_form(Question):
                 else:
                     groupe[k][1]["table-1"]["titre"]=groupe[k][0]
                     groupe2=groupe[k][1]["table-1"].copy()
-                    self.groupe_to_dic(groupe2,name2)                   
+                    self.groupe_to_dic(groupe2,name2)
+#-------------------------------------------------------------------------------------------------------
+# === Detection et ajout de question de type tableau                   
+                    
             else :
                 if "table" in k:
                     if "lignes" in groupe[k]:
@@ -647,20 +711,40 @@ class yaml_form(Question):
                             repeat=None
                         for ligne in groupe[k]["lignes"]:
                             groupe2={}
-                            groupe2["titre"]=groupe[k]["legende"]+": Detail pour "+str(ligne)+"() $app(field-list)" if (len(groupe[k]["lignes"])>1) else groupe[k]["legende"]+"() $app(field-list)"
+                            # Groupe 2 est un sting de type complexe 
+                            # Il consiste a ajouter à la question le detail sur la du tableau
+                            # Pour ce faire on remplace dans la question la premiere 
+                            # parenthese "(" 
+                            # par ": Detail pour ligneItem" 
+                            # ligneItem etant ici l'element caractéristique de la ligne concerné
+                            groupe2["titre"]=groupe[k]["legende"].replace("(",": Detail pour "+str(ligne)+" (")+ " $app(field-list)" if (len(groupe[k]["lignes"])>1) else groupe[k]["legende"]+" () $app(field-list)"
                             for col in range(len(groupe[k]["colonnes"])):
                                 groupe2[str(col)] = groupe[k]["colonnes"][col]
                             name2=name+'_'+str(k)+"_"+str(ligne)
+                            #------------------------------
+                            #Appel reccursif de la fonction
                             self.groupe_to_dic(groupe2,name2,repeat)
                             
                 else :
+                    #------------------------------
+                    #Appel reccursif de la fonction
                     self.groupe_to_dic(groupe[k],name+"_"+str(k))
+                    
+#-------------------------------------------------------------------------------------------------------
+# === Fermerture de group ou de repeat_group     
         q=Question("")
-        if repeat!=None:q.type="end_repeat"
+        if type_of_groupe=="repeat":            
+            q.type="end_repeat"
+            type_of_groupe=""
         else:q.type="end_group"
         self.g_questions.append(q.formated())
+#-------------------------------------------------------------------------------------------------------
+# === fin de la convertion du groupe de questions en dictionnaire
         return self.g_questions    
-    
+
+
+#===================================================================================================
+#@METHODE POUR CONVERTIR TOUS LES GROUPES DU FORMULAIRE EN DICTIONNAIRES
     def to_dicts(self):
         """
         Cette methode retourne la liste de toutes les questions sous forme de 
@@ -676,6 +760,8 @@ class yaml_form(Question):
             reponse_dict=self.groupe_to_dic(groupe,self.groupes[k])
         return reponse_dict
 
+#===================================================================================================
+#@METHODE POUR CONVERTIR LE FORMULAIRE EN FICHIER EXCEL
     def to_xslform(self, output):
         """
         Convertie la liste des questions en un DataFrame puis l'enregistre dans un fichier excel
@@ -699,7 +785,7 @@ class yaml_form(Question):
         self.xls_survey=dico["survey"]
         try:
             with pd.ExcelWriter(output) as writer:
-                dico["survey"].to_excel(writer, sheet_name='suvrey',index=False)
+                dico["survey"].to_excel(writer, sheet_name='survey',index=False)
                 dico["choices"].to_excel(writer, sheet_name='choices',index=False)
             dico["result"]=True
         except:
@@ -707,10 +793,13 @@ class yaml_form(Question):
         return dico
 
 
+# ================[Fonction détachées]==============================================================
+#===================================================================================================
+#@FONCTION POUR LIRE LE CONTENU D'UN FICHIER
 def content_file(file):
     with codecs.open(file, "r", "utf-8") as f:
         content = f.read()
     return content
 
 
-# ================[Fonction détachées]===============
+
