@@ -1,6 +1,6 @@
 [project]
 name = "myminixform"
-version = "1.0.4"
+version = "1.0.5"
 dependencies = [
     'pandas', 
     'openpyxl',
@@ -13,7 +13,8 @@ authors = [
   {name = "mr_kam", email = "kanicetcyrille@gmail.com"},
 ]
 maintainers = [
-  {name = "mr_kam", email = "kanicetcyrille@gmail.com"}
+  {name = "mr_kam", email = "kanicetcyrille@gmail.com"},
+  {name = "Al-Waris", email = "dossigue04@gmail.com"},
 ]
 description = "Un package python pour creer un formulaire XLSFORM à partir d'un fichier YAML"
 readme = "README.md"

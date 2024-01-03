@@ -35,14 +35,20 @@ Vous pouvez creer votre fichier de fomulaire minixform basé sur le modele suiva
 `model_formulaire.yaml`
 
 ```yaml
-# Les parametres du formulaire qui comprennent le titre, la description et les metadonnées à ajouter au formulaire.
 parametres:
-  titre: Voici le titre de la demo
+  titre: Titre du questionnaire
   description: >
-    ici vous pouvez decrire votre formulaire. Cette description sera ajouter a votre formulaire numerique deployé.
+    Il s'agit d'un modele de questionnaire yaml à utiliser avec MiniXform. 
 
 
-  metadata:
+  date: 2023-05-04
+  auteur:
+    - Nom: Nom de l'auteur
+      Prenom: Prenom auteur
+      Email: email.auteur@mail.com
+      Tel: tel_auteur
+  serveur:
+  metadata: # Les metadata sont des informations recuperé automatiquement sur le telephone de l'enqueteur
     [
       start,
       end,
@@ -54,120 +60,171 @@ parametres:
       audit,
       simserial,
     ]
-
-# Liste des proposition de choix unique ou multiples (la feuille choices de XLSFORM)
+#-----------------------------------------------------------------------------------------------------
 choix:
   sexe: &sexe
     - Homme
     - Femme
   bool: &bool [Oui, Non]
-  enqueteurs: _(modeles/excel_csv/enqueteurs.csv)
-  lieu: _(modeles/excel_csv/lieu.csv)
-  region: &region ['Bélier', "N'zi", 'Zanzan', 'Moronou', 'Cavali']
-
-# Correspont a la feuille survey qui est la liste des questions du formulaire.
+  ages: &age [18-25, 26-35, 36-45, 46-55, 56 et plus]
+  structures: &structures
+    - CNRA
+    - ANADER
+    - FIRCA
+    - ONG
+    - OPA
+    - Autre
+  regions: &regions
+    - Abidjan
+    - N'Zi
+    - Iffou
+    - Bélier
+    - Moronou
+    - Indénié-Djuablin
+    - Sud-Comoé
+  departement: &departs
+    - Agboville
+    - Sikensi
+    - Taabo
+    - Tiassalé
+    - Koro
+    - Ouaninou
+#--------------------------------------------------------------------------------------------------------------
 questions:
-  I: # groupe I
-    titre: "DONNEES SUR L'ENQUETEUR"
-    description: Il s'agit de meta données sur les eqnueêteurs et l'enquête en vu d'assurer la tracabilitée des données. _note
-    date: Date d'enquête (jj-mm-aaaa) _date
-    nom_enqueteur: #
-      - Nom et prénoms de l'enqueteur() _s1
-      - [enqueteurs]
-    num_enqueteur: Numéro de l'enqueteur (Doit être un numéro à 10 chiffre) $(num) # Modele d'une question
-    Source_info: Nom et prénoms de la source d'information() _texte
-    lieu_enqu:
-      - Lieu d'enquête() _s1
-      - [yamoussoukro, bonon, bouaflé, zatta]
-  II:
-    titre: SIEGE DE LA COOPERATIVE
-    1:
-      - Nom de la coopérative()
-      - [Copab, Scopako, Coprodigo, Copavgon]
-    2: Année de création de la coopérative() _date_annee
-    3:
-      - Region de la coopérative() _s1
-      - *region
-    4:
-      - Departement de la coopérative()
-      - [lieu.departement]
-    5: Nombre d'établissement primaires() _e **
-    6: Nombre d'établissement secondaire() _e **
-    7: Nombre d'établissement sanitaire() _e **
-    8: Nombre de femmes() _e
-    9: Nombre d'hommes() _e
-    10:
-      - Activité economique()
-      - [
-          Pèche,
-          Maraicher,
-          Cultures de rentes,
-          Chasse,
-          Industries,
-          Commerce,
-          Artisanat,
-        ]
-    11:
-      - Avez vous une unité de transformation ?() _s1 **
-      - *bool
-    12:
-      - Si oui() $si(II_11=Oui)
-      - g:
-          1: Nombre d'unité de transformation() _i
-          2: Capacité de transformation (en tonne/an) _r {$>1}
-  III:
-    titre: SECTIONS DE LA COOPERATIVE
-    1: Nombre de section _entier()
-    table_1:
-      legende: Information sur la sectione
-      lignes: [III_1]
-      colonnes:
-        - - Nom de la section()
-          - [goumere, tankesse, goutouko, coutou]
-        - Nom du responsable de la section() _texte
-        - Nombre de magasin de stockage() _i
-        - Capacité totale des magasins de stockage (En tonnes) _entier
-        - Coordonnées du siège() _geopoint
-        - production: production de la campagne précedentes(en tonnes) _entier
-  IV:
-    titre: VEHICULES DE LA COOPERATIVE
-    1:
-      - types de véhicules
-      - [Moto, Tricyle, Rémorque, Camion, Vélo, Baché, Autre]
-    g1:
-      1: Nombre de moto() _i
-      2: Nombre de tricyle() _i
-      3: Nombre de Remorque() _i
-      4: Nombre de camion() _i
-      5: Nombre de vélo() _i
-      6: Nombre de bachés() _i
-      7: Nombre d'autre produit() _entier
-    table-1:
-      legende: Informations sur les véhicules
-      colonnes:
-        [
-          Modèle (Modele du vehicule) _texte,
-          Année (Année d'achat du véhicule) _annee,
-          Nombre (Nombre de véhicule) _entier,
-        ]
-      lignes:
-        - Moto
-        - tricyle
-        - Remorques
-        - Camion
-        - Vélo
-        - Baché
-        - Autre
+  I:
+    titre: DESCRIPTION DE L'ETUDE
+    description: >
+      <b>Objectif générale : </b>
+       <br>
+       L'objectif de l'étude est d'identifier les contraintes majeures à l'adoption des technologies et innovations 
+       dans le domaine agricole, afin de proposer une stratégie de diffusion optimisant leur adoption. _note
 
-    table-2:
-      legende: Informations sur les véhicules
+
+    object_questionnaire: >
+      - Identifier des innovations et technologies générées et diffusées ou non dans le cadre du FCIAD - Identifier les mécanismes de génération et de transfert de ces innovations - Forces et faiblesses de ces mécanismes - Quelques recommandations d'amélioration des mécanismes
+
+
+  A:
+    titre: >
+      A: IDENTIFICATION DE L'ENQUETE
+
+
+    2: A.1 Date d'enquete (………/05/2023) _date
+    3: A.2 Nom () **
+    4: A.3 Prénoms **
+    5:
+      - A.5 Sexe ()
+      - *sexe
+    6: A.6 Tranche âge () $[18-25,26-35,36-45,46-55,56 et plus ] _s1
+    7: A.7 Niveau étude () _s1 $[Sans niveau ,coranique ,Primaire,  Secondaire général, Secondaire technique ,Supérieur]
+    8:
+      - A.8 Région
+      - *regions
+    9:
+      - A.9 Département
+      - *departs
+    10: A.10 Ville/village  ()
+    11a: A.11-a Téléphone ()
+    11b: A-11-b E-mail ()
+    12a: A.12 Chaîne de valeur ()
+    12b: Innovation ()
+    13: A.13 Structure de vulgarisation ()
+    14: A.14 Taille de l'exploitation (En Hectares) _e
+    15: A.15 Taille de l'activité de la chaine de valeur ( En Hectares) _e
+    16: A.16 Nombre d'années dans l'activité de la chaine de valeur () _e
+  B:
+    titre: B. EVALUATION DE L'ENVIRONNEMENT
+    1:
+      - B.1 Avez-vous déjà adopté d'autres innovations avant celle sous étude ?
+      - *bool
+    2:
+      - Si oui, quelles ont été les structures de diffusion ?() $si(${B_2}='Oui')
+      - *structures
+    table-1:
+      legende: B.2 En général comment appréciez-vous les interventions de ces structures ?
       colonnes:
-        [
-          Modèle (Modele du vehicule) _texte,
-          Année (Année d'achat du véhicule) _annee,
-          Nombre (Nombre de véhicule) _entier,
-        ]
+        - CNRA () _s1 $[Très satisfaisant, Satisfaisant, Peu satisfaisant, Pas du tout satisfaisant]
+        - ANADER () _s1 $[Très satisfaisant, Satisfaisant, Peu satisfaisant, Pas du tout satisfaisant]
+        - FIRCA () _s1 $[Très satisfaisant, Satisfaisant, Peu satisfaisant, Pas du tout satisfaisant]
+        - ONG () _s1 $[Très satisfaisant, Satisfaisant, Peu satisfaisant, Pas du tout satisfaisant]
+        - OPA () _s1 $[Très satisfaisant, Satisfaisant, Peu satisfaisant, Pas du tout satisfaisant]
+        - Autre () _s1 $[Très satisfaisant, Satisfaisant, Peu satisfaisant, Pas du tout satisfaisant]
       lignes: [1]
+    3: B.3 Comment avez-vous été informé(e) de l'innovation du projet FCIAD dont vous a été bénéficiaire ?
+    4:
+      - B.4 Avez-vous été d'une manière ou d'une autre associé à l'identification du problème qui a permis de générer l'innovation dont vous êtes bénéficiaire ?
+      - *bool
+    5: B.5 Si oui, dans quel cadre ?() _sm $[ Votre OPA , Consultation individuelle, autre] $if(${B_4}='Oui')
+    6: Si autre préciser() $if(sm(${B_5}='autre'))
+  # ---
+  C:
+    titre: >
+      C. INNOVATIONS ADOPTEES
+
+
+    note: >
+      Identification de l'innovation ou la technologie adoptée dans le cadre du FCIAD () _note
+
+
+    1:
+      - C.1 Nature de l'innovation dont vous avez bénéficié. ()
+      - [Production, Transformation, Valorisation]
+    2: C.2      Période de diffusion()  _date
+    3: C.3      Difficultés rencontrées pendant l'adoption      ()
+    4: C.4      Maîtrise de l'innovation à ce jour () $[Bien maîtrisée,Peu maîtrisée,Pas encore maîtrisée]
+    5: C.5      Si peu ou pas maîtrisée, quelles sont les causes ? () $[Formation insuffisante, Ressources matérielles insuffisantes,Autre]
+    5a: Si autres, préciser ()
+    6: C.6 Si vous avez abandonné l'innovation, après combien de temps  d'essai ? () $[Mois, Campagnes, Années]
+    7: causes de l'abandon ()
+  # ---
+  D:
+    titre: D. EVALUATION DE LA PERTINENCE
+    1: D.1 .Pouvez-vous évaluer le niveau de pertinence de l'Innovation & technologie ?() $[Très pertinent,     pertinent,      Peu pertinent,  Pas pertinent NSP]
+
+    2:
+      - D.2. Globalement Pensez-vous que l'innovation répondait à vos besoins ?() _s1
+      - *bool
+    3:
+      - >
+        Si oui, pensez-vous qu'elle : () 
+
+
+      - - introduit peu de changement sur l'exploitation
+        - permet de résoudre un problème sectoriel et a des répercussions sur l'ensemble de l'exploitation
+        - implique l'adoption simultanée de diverses techniques cohérentes entre elles
+        - Autre
+    4: Si l'innovation repondait à un autre besoins, précisez le. ()
+  # ----------------------------------------------------------------
+  E:
+    titre: E. EVALUATION DE L'EFFICACITE
+    table-1:
+      legende: E.1      Si l'innovations a quelque peu répondu à vos besoins, quel impact sur votre activité ? (Justifiez votre réponse en donnant des chiffres avant et après l'adoption de l'innovation)
+      colonnes: [Avant (Chiffre) _e, Après ( Chiffre) _e]
+      lignes:
+        - Gain de productivité
+        - Gain de qualité
+        - Gain de temps
+        - Gain de revenu supplémentaire
+        - Autre impact sur votre activité
+  # --------------------------------
+  F:
+    titre: F    EVALUATION DU MECANISME DE TRANSFERT DES INNOVATIONS GENEREES A LA VULGARISATION ET DE LA DURABILITE
+    1: F.1      L'innovation part du chercheur au vulgarisateur. Comment passe-t-elle du vulgarisateur à vous? ()
+    2:
+      - F.2     Avez-vous noté quelques difficultés de la diffusion de l'innovation?()
+      - *bool
+    2b: Si oui, lesquelles ?()
+    3:
+      - F.3     Rencontrez-vous des difficultés à maintenir l'innovation dans votre activité ?()
+      - *bool
+    3b: Si oui, lesquelles ? ()
+    4: F.4 Selon vous, quelles sont les faiblesses qui pourraient entacher la pérennisation de l'adoption des innovations en général ? ()
+  # ----------------------------------------------------------------
+  G:
+    titre: G. VOS RECOMMANDATIONS
+    1: G.1      Au vu de tout ce qui précède, quelles recommandations pouvez-vous faire pour l'amélioration du mécanisme de diffusion et de transfert des innovations aux bénéficiaires ? ()
+    2: G.2      Selon vous, que faut-il faire pour que les innovations ne soient pas abandonnées après leur adoption par vous après un moment donné ?()
+    3: G.3      Que recommandez-vous au FCIAD pour pérenniser ses activités de transfert d'innovation et de technologies ? ()
 ```
 
 ### Composition du formulaire et syntaxe
@@ -288,7 +345,7 @@ Creer ensuite le fichier yaml du formulaire **formulaire.yaml** et le fichier de
 
 ```python
 from myminixform import *
-print(template, file=open("Template.yaml","a",encoding="utf-8")) #Template est un exemple yaml intégré à myminixform
+print(template, file=open("Template.yaml","w",encoding="utf-8")) #Template est un exemple yaml intégré à myminixform
 form=yaml_form("Template.yaml","utf-8")
 resultat=form.to_xslform("form.xlsx")
 print(result) # True

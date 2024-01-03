@@ -1,8 +1,9 @@
-
 parametres:
   titre: Titre du questionnaire
   description: >
     Il s'agit d'un modele de questionnaire yaml à utiliser avec MiniXform. 
+
+
   date: 2023-05-04
   auteur:
     - Nom: Nom de l'auteur
@@ -22,6 +23,7 @@ parametres:
       audit,
       simserial,
     ]
+#-----------------------------------------------------------------------------------------------------
 choix:
   sexe: &sexe
     - Homme
@@ -50,7 +52,7 @@ choix:
     - Tiassalé
     - Koro
     - Ouaninou
-
+#--------------------------------------------------------------------------------------------------------------
 questions:
   I:
     titre: DESCRIPTION DE L'ETUDE
@@ -64,14 +66,13 @@ questions:
     object_questionnaire: >
       - Identifier des innovations et technologies générées et diffusées ou non dans le cadre du FCIAD - Identifier les mécanismes de génération et de transfert de ces innovations - Forces et faiblesses de ces mécanismes - Quelques recommandations d'amélioration des mécanismes
 
+
   A:
     titre: >
       A: IDENTIFICATION DE L'ENQUETE
-
-
     2: A.1 Date d'enquete (………/05/2023) _date
-    3: A.2 Nom
-    4: A.3 Prénoms
+    3: A.2 Nom () **
+    4: A.3 Prénoms **
     5:
       - A.5 Sexe ()
       - *sexe
@@ -92,14 +93,13 @@ questions:
     14: A.14 Taille de l'exploitation (En Hectares) _e
     15: A.15 Taille de l'activité de la chaine de valeur ( En Hectares) _e
     16: A.16 Nombre d'années dans l'activité de la chaine de valeur () _e
-
   B:
     titre: B. EVALUATION DE L'ENVIRONNEMENT
     1:
       - B.1 Avez-vous déjà adopté d'autres innovations avant celle sous étude ?
       - *bool
     2:
-      - Si oui, quelles ont été les structures de diffusion ?() $si(III_A=Oui)
+      - Si oui, quelles ont été les structures de diffusion ?() $si(${B_2}='Oui')
       - *structures
     table-1:
       legende: B.2 En général comment appréciez-vous les interventions de ces structures ?
@@ -115,32 +115,28 @@ questions:
     4:
       - B.4 Avez-vous été d'une manière ou d'une autre associé à l'identification du problème qui a permis de générer l'innovation dont vous êtes bénéficiaire ?
       - *bool
-    5: B.5 Si oui, dans quel cadre ?() $[ Votre OPA , Consultation individuelle] $si(III_3=oui)
-    6: Si autre préciser()
+    5: B.5 Si oui, dans quel cadre ?() _sm $[ Votre OPA , Consultation individuelle, autre] $if(${B_4}='Oui')
+    6: Si autre préciser() $if(sm(${B_5}='autre'))
   # ---
   C:
     titre: >
       C. INNOVATIONS ADOPTEES
-
-
     note: >
       Identification de l'innovation ou la technologie adoptée dans le cadre du FCIAD () _note
-
-
     1:
-      - C.1 Nature de l'innovation dont vous avez bénéficié. () _s1
+      - C.1 Nature de l'innovation dont vous avez bénéficié. ()
       - [Production, Transformation, Valorisation]
     2: C.2      Période de diffusion()  _date
     3: C.3      Difficultés rencontrées pendant l'adoption      ()
-    4: C.4      Maîtrise de l'innovation à ce jour ()   _s1 $[Bien maîtrisée,Peu maîtrisée,Pas encore maîtrisée]
-    5: C.5      Si peu ou pas maîtrisée, quelles sont les causes ? () _s1 $[Formation insuffisante, Ressources matérielles insuffisantes,Autre]
+    4: C.4      Maîtrise de l'innovation à ce jour () $[Bien maîtrisée,Peu maîtrisée,Pas encore maîtrisée]
+    5: C.5      Si peu ou pas maîtrisée, quelles sont les causes ? () $[Formation insuffisante, Ressources matérielles insuffisantes,Autre]
     5a: Si autres, préciser ()
-    6: C.6Si vous avez abandonné l'innovation, après combien de temps  d'essai ? () _s1 $[Mois, Campagnes, Années]
+    6: C.6 Si vous avez abandonné l'innovation, après combien de temps  d'essai ? () $[Mois, Campagnes, Années]
     7: causes de l'abandon ()
   # ---
   D:
     titre: D. EVALUATION DE LA PERTINENCE
-    1: D.1 .Pouvez-vous évaluer le niveau de pertinence de l'Innovation & technologie ?() _s1 $[Très pertinent, pertinent,      Peu pertinent,  Pas pertinent   NSP]
+    1: D.1 .Pouvez-vous évaluer le niveau de pertinence de l'Innovation & technologie ?() $[Très pertinent,     pertinent,      Peu pertinent,  Pas pertinent NSP]
 
     2:
       - D.2. Globalement Pensez-vous que l'innovation répondait à vos besoins ?() _s1
@@ -148,6 +144,7 @@ questions:
     3:
       - >
         Si oui, pensez-vous qu'elle : () 
+
 
       - - introduit peu de changement sur l'exploitation
         - permet de résoudre un problème sectoriel et a des répercussions sur l'ensemble de l'exploitation
@@ -185,5 +182,3 @@ questions:
     1: G.1      Au vu de tout ce qui précède, quelles recommandations pouvez-vous faire pour l'amélioration du mécanisme de diffusion et de transfert des innovations aux bénéficiaires ? ()
     2: G.2      Selon vous, que faut-il faire pour que les innovations ne soient pas abandonnées après leur adoption par vous après un moment donné ?()
     3: G.3      Que recommandez-vous au FCIAD pour pérenniser ses activités de transfert d'innovation et de technologies ? ()
-
-

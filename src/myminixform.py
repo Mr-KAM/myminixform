@@ -5,7 +5,7 @@
 # 〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
 from __future__ import unicode_literals
 import pandas as pd
-from rich import print
+#from rich import print
 import re
 import codecs
 import openpyxl
@@ -74,7 +74,9 @@ def add_metadata(yaml_data):
     modele=yaml_data
     if "metadata" in modele["parametres"].keys():
         metadata={k:k for k in modele["parametres"]["metadata"]}
-        modele["parametres"]["metadata"]= metadata
+        metadata_titled={"titre":"Metadata"}
+        metadata_titled.update(metadata)
+        modele["parametres"]["metadata"]= metadata_titled
     return modele
 
 def yaml_to_csv(yaml_data):
@@ -93,55 +95,90 @@ def yaml_to_csv(yaml_data):
 #@VARIABLE "xform_types" 
 # QUI REPRESENTE LA LISTE DES TYPES DE QUESTIONS XLSFORM ET LEURS EQUIVALENT MINIXFORM.
 xform_types = """
+            integer,integer
             integer,i
             integer,e
             integer,entier
-            integer,integer
             integer,int
             integer,ent
+            decimal,decimal
             decimal,r
             decimal,d
+            range,range
             range,rg
+            text,text
             text,t
             text,txt
+            select_one,select_one
             select_one,so
             select_one,s1
             select_one,liste_u
             select_one,lu
+            select_multiple,select_multiple
             select_multiple,sm
+            select_multiple,s2
             select_multiple,lm
+            select_one_from_file,select_one_from_file
             select_one_from_file,sof
+            select_multiple_from_file,select_multiple_from_file
             select_multiple_from_file,smf
+            rank,rank
             rank,rk
             rank,rn
+            note,note
             note,n
             note,nt
+            geopoint,geopoint
             geopoint,point
+            geopoint,coord
+            geopoint,gps
+            geotrace,geotrace
             geotrace,trace
+            geotrace,track
+            geotrace,path
+            geotrace,line
+            geotrace,ligne
+            geoshape,geoshape
             geoshape,shape
+            geoshape,polygone
             date,de
             date,date
+            date,date
             time,tm
+            time,time
             time,te
+            dateTime,dateTime
             dateTime,dtme
+            image,image
             image,img
             audio,audio
             audio,o
+            background-audio,background-audio
             background-audio,bg_audio
             video,video
             video,v
             file,f
+            barcode,barcode
+            barcode,qrcode
             barcode,bc
+            calculate,calculate
             calculate,calc
+            acknowledge,acknowledge
             acknowledge,ack
+            hidden,hidden
             hidden,hd
+            xml-external,xml-external
             xml-external,xml
+            begin_group,begin_group
             begin_group,g
             begin_group,group
+            end_group,end_group
             end_group,end
             end_group,eg
+            repeat_group,repeat_group
             repeat_group,repeat
             repeat_group,re
+            end_repeat,end_repeat
             end_repeat,er
             end_repeat,endr
         """
@@ -222,8 +259,8 @@ questions:
 
 
     2: A.1 Date d'enquete (………/05/2023) _date
-    3: A.2 Nom
-    4: A.3 Prénoms
+    3: A.2 Nom () **
+    4: A.3 Prénoms **
     5:
       - A.5 Sexe ()
       - *sexe
@@ -236,7 +273,7 @@ questions:
       - A.9 Département
       - *departs
     10: A.10 Ville/village  ()
-    11a: A.11-a Téléphone ()
+    11a: A.11-a Téléphone () 
     11b: A-11-b E-mail ()
     12a: A.12 Chaîne de valeur ()
     12b: Innovation ()
@@ -244,14 +281,13 @@ questions:
     14: A.14 Taille de l'exploitation (En Hectares) _e
     15: A.15 Taille de l'activité de la chaine de valeur ( En Hectares) _e
     16: A.16 Nombre d'années dans l'activité de la chaine de valeur () _e
-
   B:
     titre: B. EVALUATION DE L'ENVIRONNEMENT
     1:
       - B.1 Avez-vous déjà adopté d'autres innovations avant celle sous étude ?
       - *bool
     2:
-      - Si oui, quelles ont été les structures de diffusion ?() $si(III_A=Oui)
+      - Si oui, quelles ont été les structures de diffusion ?() $si(${B_2}='Oui')
       - *structures
     table-1:
       legende: B.2 En général comment appréciez-vous les interventions de ces structures ?
@@ -267,32 +303,28 @@ questions:
     4:
       - B.4 Avez-vous été d'une manière ou d'une autre associé à l'identification du problème qui a permis de générer l'innovation dont vous êtes bénéficiaire ?
       - *bool
-    5: B.5 Si oui, dans quel cadre ?() $[ Votre OPA , Consultation individuelle] $si(III_3=oui)
-    6: Si autre préciser()
+    5: B.5 Si oui, dans quel cadre ?() _sm $[ Votre OPA , Consultation individuelle, autre] $if(${B_4}='Oui')
+    6: Si autre préciser() $if(${B_5}='autre')
   # ---
   C:
     titre: >
       C. INNOVATIONS ADOPTEES
-
-
     note: >
       Identification de l'innovation ou la technologie adoptée dans le cadre du FCIAD () _note
-
-
     1:
-      - C.1 Nature de l'innovation dont vous avez bénéficié. () _s1
+      - C.1 Nature de l'innovation dont vous avez bénéficié. ()
       - [Production, Transformation, Valorisation]
     2: C.2	Période de diffusion()	_date
     3: C.3	Difficultés rencontrées pendant l'adoption	()
-    4: C.4	Maîtrise de l'innovation à ce jour ()	_s1 $[Bien maîtrisée,Peu maîtrisée,Pas encore maîtrisée]
-    5: C.5	Si peu ou pas maîtrisée, quelles sont les causes ? () _s1 $[Formation insuffisante, Ressources matérielles insuffisantes,Autre]
+    4: C.4	Maîtrise de l'innovation à ce jour () $[Bien maîtrisée,Peu maîtrisée,Pas encore maîtrisée]
+    5: C.5	Si peu ou pas maîtrisée, quelles sont les causes ? () $[Formation insuffisante, Ressources matérielles insuffisantes,Autre]
     5a: Si autres, préciser ()
-    6: C.6Si vous avez abandonné l'innovation, après combien de temps  d'essai ? () _s1 $[Mois, Campagnes, Années]
+    6: C.6 Si vous avez abandonné l'innovation, après combien de temps  d'essai ? () $[Mois, Campagnes, Années]
     7: causes de l'abandon ()
   # ---
   D:
     titre: D. EVALUATION DE LA PERTINENCE
-    1: D.1 .Pouvez-vous évaluer le niveau de pertinence de l'Innovation & technologie ?() _s1 $[Très pertinent,	pertinent,	Peu pertinent,	Pas pertinent NSP]
+    1: D.1 .Pouvez-vous évaluer le niveau de pertinence de l'Innovation & technologie ?() $[Très pertinent,	pertinent,	Peu pertinent,	Pas pertinent NSP]
 
     2:
       - D.2. Globalement Pensez-vous que l'innovation répondait à vos besoins ?() _s1
@@ -337,7 +369,6 @@ questions:
     1: G.1	Au vu de tout ce qui précède, quelles recommandations pouvez-vous faire pour l'amélioration du mécanisme de diffusion et de transfert des innovations aux bénéficiaires ? ()
     2: G.2	Selon vous, que faut-il faire pour que les innovations ne soient pas abandonnées après leur adoption par vous après un moment donné ?()
     3: G.3	Que recommandez-vous au FCIAD pour pérenniser ses activités de transfert d'innovation et de technologies ? ()
-
 """
 
 # 〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
@@ -494,8 +525,15 @@ class Question:
         except: return result[0]
 
     def montrer_si(self):
-        result=self.extracteur(self.text,"$si(",")")
-        return result[0] if len(result) > 0 else ""
+        """doit être formaté sous la forme $si(sm(name='valeur')) pour les select multiple
+        """
+        resultat=self.extracteur(self.text,"$si(",")")
+        resultat_if=self.extracteur(self.text,"$if(",")")
+        if len(resultat_if)>len(resultat) : resultat =resultat_if
+        resultat=resultat[0] if len(resultat) > 0 else ""
+        resultat= resultat.replace("sm","selected").replace("=",",") if ("sm(" in resultat) else resultat
+
+        return resultat
 
     def is_required(self):
         """
@@ -540,9 +578,7 @@ class Question:
 
     def formated(self):
         """
-        Permet de formater une question liste tel que liste 1
-
-        
+        Permet de formater une question en liste de dictionnaire
         """
         
         dico=[
@@ -565,7 +601,9 @@ class Question:
         if "metadata" in dico[0]["name"]:
             dico[0]["type"]=dico[0]["label"]
             dico[0]["name"]=dico[0]["label"]
-            
+            if dico[0]["name"]=="Metadata":
+                dico[0]["type"]="begin_group"
+
         return dico
 
 #===================================================================================================
@@ -611,8 +649,11 @@ class yaml_form(Question):
 #=== Detection du type de groupe
         type_of_groupe="simple" #on commence par supposer qu'il s'agit d'un groupe simple entre en parametre
         if ("titre" or "title") in groupe: # Cette condition est vrai s'il exiwte une question de nom "titre" ou title dans le groupe
+            #if groupe["titre"]=="Metadata":print(groupe["titre"]) 
             try:
                 q=Question(groupe["titre"])
+                if groupe["titre"]=="Metadata":
+                    q.type="begin_group"
             except:
                 q=Question(groupe["title"])
             if repeat!= None: # Est vrai si la nature du groupe est de type repeat. "repeat" ici est un parametre de la fonction group_to_dic
@@ -655,7 +696,7 @@ class yaml_form(Question):
                 q=Question(groupe[k][0])
                 q.name=name+"_"+str(k)
                 q.choice=groupe[k][1]
-                if q.type==None:q.type="select_multiple"
+                if q.type==None:q.type="select_one"
                 q.type=q.type+" choix_"+q.name
                 self.g_questions.append(q.formated())
 
@@ -736,7 +777,9 @@ class yaml_form(Question):
         if type_of_groupe=="repeat":            
             q.type="end_repeat"
             type_of_groupe=""
-        else:q.type="end_group"
+        if type_of_groupe=="simple": 
+            q.type="end_group"
+            type_of_groupe=""
         self.g_questions.append(q.formated())
 #-------------------------------------------------------------------------------------------------------
 # === fin de la convertion du groupe de questions en dictionnaire
