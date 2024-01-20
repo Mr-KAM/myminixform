@@ -20,6 +20,123 @@ except ImportError:
 # 〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
 # [2] [Definition des fonctions ]
 # 〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜〜
+def regex(regex_name):
+    regex_dict = {
+        "EMAIL": (
+            r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+            "Cette expression valide si une chaîne représente une adresse email valide."
+        ),
+        "NAME": (
+            r"^([a-zA-Z]{1,}(['])?[a-zA-Z]+)([ ][a-zA-Z]{1,}(['])?[a-zA-Z]+)+$",
+            "Nom et prenoms"
+        ),
+        "NAME_MAJ": (
+            r"^([A-Z]{1,}(['])?[A-Z]+)([ ][A-Z]{1,}(['])?[A-Z]+)+$",
+            "Nom et prenoms en majuscule"
+        ),
+        "NAME_MIN": (
+            r"^([a-z]{1,}(['])?[a-z]+)([ ][a-z]{1,}(['])?[a-z]+)+$",
+            "Nom et prenoms en majuscule"
+        ),
+        "PHONE_NUMBERS": (
+            r"\b\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b",
+            "Capture les numéros de téléphone dans divers formats."
+        ),
+        "PHONE_US": (
+            r"^\(\d{3}\)\d{3}-\d{4}$",
+            "Valide un numéro de téléphone au format (123) 456-7890."
+        ),
+        "PHONE_CI": (
+            r"^(1|05|07)((?:[-]\d{2}){4}|(?:[ ]\d{2}){4}|\d{8})$",
+            "Valide un numéro de téléphone au format 0745678900 ou 07 45 67 89 00 ou 07-45-67-89-00 respectant les 10 chiffres du numéro de téléphone ivoirien."
+        ),
+        "IPV4": (
+            r"^\b(?:\d{1,3}\.){3}\d{1,3}\b$",
+            "Valide une adresse IP IPv4."
+        ),
+        "ZIP_US": (
+            r"\b\d{5}(?:-\d{4})?\b",
+            "Extrayez les codes postaux américains, optionnellement suivis par un code postal étendu."
+        ),
+        "ALPHANUMERIC": (
+            r"^[a-zA-Z0-9]+$",
+            "Valide si une chaîne ne contient que des lettres majuscules et minuscules ainsi que des chiffres."
+        ),
+        "HTML_TAGS": (
+            r"<[^>]+>",
+            "Capture toutes les balises HTML dans une chaîne."
+        ),
+        "DATE_YYYY_MM_DD": (
+            r"^\d{4}-\d{2}-\d{2}$",
+            "Valide une date au format YYYY-MM-DD."
+        ),
+        "URL_SIMPLE": (
+            r"^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$",
+            "Valide une URL simple commençant par 'http', 'https' ou 'ftp'."
+        ),
+        "HASHTAGS": (
+            r"#\w+",
+            "Capture tous les hashtags dans une chaîne."
+        ),
+        "POSTAL_CODE_CA": (
+            r"^[ABCEGHJKLMNPRSTVXY]\d[A-Z]\d[A-Z]\d$",
+            "Valide un code postal canadien."
+        ),
+        "EMAIL_ADDRESSES": (
+            r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b",
+            "Capture toutes les adresses email dans une chaîne."
+        ),
+        "CREDIT_CARD_SIMPLE": (
+            r"^\d{4}-\d{4}-\d{4}-\d{4}$",
+            "Valide un numéro de carte de crédit au format 0000-0000-0000-0000."
+        ),
+        "TIME_HH_MM": (
+            r"([01]\d|2[0-3]):([0-5]\d)",
+            "Capture les heures au format HH:MM."
+        ),
+        "STRONG_PASSWORD": (
+            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+            "Valide un mot de passe fort avec au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial."
+        ),
+        "TWITTER_MENTIONS": (
+            r"@(\w+)",
+            "Capture toutes les mentions Twitter dans une chaîne."
+        ),
+        "MAC_ADDRESS": (
+            r"^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$",
+            "Valide une adresse MAC au format standard."
+        ),
+        "QUOTED_STRINGS": (
+            r'"(.*?)"',
+            "Capture le contenu entre guillemets."
+        ),
+        "SSN_US": (
+            r"^\d{3}-\d{2}-\d{4}$",
+            "Valide un numéro de sécurité sociale américain au format 123-45-6789."
+        ),
+        "HTML_LINKS": (
+            r'href=["\'](https?:\/\/[^"\']+)["\']',
+            "Capture les URL des liens dans du code HTML."
+        ),
+    }
+
+    return regex_dict.get(regex_name, None)
+
+
+def eval_contrainte(expression):
+    if expression.startswith("py::"):
+        val= expression[len("py::"):]
+        try:
+            regx=eval(f'{val}')
+        except:
+            regx=eval(f'{val})')
+    elif expression.startswith("mxf::"):
+        val=expression[len("mxf::"):]
+        regx=eval(f'regex("{val}")[0]')
+    else:
+        regx=expression
+    return f'regex(.,"{regx}")'
+
 def lire_yaml(fichier,encoding="utf-8"):
     """
     Lecture de fichier .yaml
@@ -182,6 +299,14 @@ xform_types = """
             end_repeat,er
             end_repeat,endr
         """
+def list_types():
+    chaine = xform_types
+    types_xlsform = [x.replace(" ", "").split(",")[0] for x in Question("").clear_empty_lines(chaine).split("\n") ]
+    types_minixform = [ x.replace(" ", "").split(",")[1] for x in Question("").clear_empty_lines(chaine).split("\n")]
+    types = list(zip(types_xlsform, types_minixform))
+    types=pd.DataFrame(types, columns=["xform", "minixform"])
+    return pd.DataFrame(types, columns=["xform", "minixform"])
+
 #===================================================================================================
 #@VARIABLE "template" 
 # QUI REPRESENTE UN EXEMPLE DE TEMPLATE YAML FORMATE EN MINIXFORM.
@@ -256,11 +381,9 @@ questions:
   A:
     titre: >
       A: IDENTIFICATION DE L'ENQUETE
-
-
     2: A.1 Date d'enquete (………/05/2023) _date
-    3: A.2 Nom () **
-    4: A.3 Prénoms **
+    3: A.2 Nom () ** $=(py::at_most(2, UPPERCASE))
+    4: A.3 Prénoms ** $=(mxf::NAME_MIN)
     5:
       - A.5 Sexe ()
       - *sexe
@@ -273,8 +396,8 @@ questions:
       - A.9 Département
       - *departs
     10: A.10 Ville/village  ()
-    11a: A.11-a Téléphone () 
-    11b: A-11-b E-mail ()
+    11a: A.11-a Téléphone () $=(mxf::PHONE_CI)
+    11b: A-11-b E-mail () $=(mxf::EMAIL)
     12a: A.12 Chaîne de valeur ()
     12b: Innovation ()
     13: A.13 Structure de vulgarisation ()
@@ -385,8 +508,7 @@ class Question:
         Objet question
         Cet objet represente une question du formulaire, le type de la question et les autres attributs et methodes applicables à une question. 
         input: texte minixform
-            ex: "Voici l'exemple de question ${I_1} pour tester minixform !  (Nous avons ici la description) $[choix 1, choix 2, choix 3] ** _e $si(I_5>0) =(.>10|Vous devez entrer un nombre superieur à │
-│                               10) $app(coul 1) $calc(+3) $ro"
+            ex: "Voici l'exemple de question ${I_1} pour tester minixform !  (Nous avons ici la description) $[choix 1, choix 2, choix 3] ** _e $si(I_5>0) $=(.>10|Vous devez entrer un nombre superieur à 10) $app(coul 1) $calc(+3) $ro"
         propriétés:
             self.text = Chaine de caractère entré en parametre
             self.texte_type= type de la question au format minixform extrait de la question
@@ -486,9 +608,9 @@ class Question:
     def extraire_hint(self):
         """
         Permet d'extraire l'hint de la question
+        Renvoie une liste des informations contenues entre parenthèses dans la chaîne.
         Output :
-            String valeur de hint dans la question
-            Renvoie une liste des informations contenues entre parenthèses dans la chaîne.
+            String: valeur de hint dans la question
         """
         resultat = self.extracteur(self.text," (",")")
         return resultat[0] if len(resultat)>0 else ""
@@ -496,9 +618,9 @@ class Question:
     def extraire_apparence(self):
         """
         Pour extraire l'apparence de la question.
-        On extrait pour ce faire le contenu entre les parenthèses de '_app()' ou '#()'
-            Output :
-            String valeur de appearance dans la question
+        On extrait pour ce faire le contenu entre les parenthèses de '$app()' ou '#()'
+        Output :
+            String: valeur de appearance dans la question
         """
         reponses1=self.extracteur(self.text," $app(",")")
         reponses2=self.extracteur(self.text," #(",")")
@@ -507,15 +629,17 @@ class Question:
         else: return ""
 
     def extraire_calculation(self):
-        """        
+        """
+        Pour extraire la valeur de la variable calculation.
+        On extrait pour ce faire le contenu entre les parenthèses de '$calc()'       
         Output :
-                String valeur de calculation dans la question
+                expression: valeur de calculation dans la question
         """
         result = self.extracteur(self.text," $calc(",")")
         return result[0] if len(result) > 0 else ""
 
     def extraire_constraint(self):
-        result=self.extracteur(self.text," =(",")")
+        result=self.extracteur(self.text," $=(",")")
         try: return result[0].split('|')[0] if len(result) > 0 else ""
         except: return result[0]
 
@@ -525,7 +649,7 @@ class Question:
         except: return result[0]
 
     def montrer_si(self):
-        """doit être formaté sous la forme $si(sm(name='valeur')) pour les select multiple
+        """doit être formaté sous la forme $si(sm(name='valeur')) ou $if(sm(name='valeur')) pour les select multiple
         """
         resultat=self.extracteur(self.text,"$si(",")")
         resultat_if=self.extracteur(self.text,"$if(",")")
@@ -580,7 +704,8 @@ class Question:
         """
         Permet de formater une question en liste de dictionnaire
         """
-        
+        if self.constraint!="":
+            self.constraint=eval_contrainte(self.extraire_constraint())
         dico=[
             {
             "type":self.type,
@@ -591,7 +716,7 @@ class Question:
             "relevant":self.relevant,
             "calculation":self.calculation,
             "constraint":self.constraint,
-            "constarint_message":self.constraint_message,
+            "constraint_message":self.constraint_message,
             "readonly":self.readonly,
             "appearance":self.appearance,
             "repeat_count":self.repeat_count
@@ -826,6 +951,7 @@ class yaml_form(Question):
         dico={"survey":pd.DataFrame(survey),"choices":pd.DataFrame(choices)}
         self.xls_choices=dico["choices"]
         self.xls_survey=dico["survey"]
+        print(self.xls_survey)
         try:
             with pd.ExcelWriter(output) as writer:
                 dico["survey"].to_excel(writer, sheet_name='survey',index=False)

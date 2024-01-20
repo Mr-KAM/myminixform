@@ -341,7 +341,7 @@ Puis installer minixform
 pip install myminixform
 ```
 
-Creer ensuite le fichier yaml du formulaire **formulaire.yaml** et le fichier de script python **main.py**.
+Creer ensuite le fichier yaml du formulaire **Template.yaml** et le fichier de script python **main.py**.
 
 ```python
 from myminixform import *

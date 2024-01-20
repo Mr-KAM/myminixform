@@ -1,3 +1,4 @@
+
 parametres:
   titre: Titre du questionnaire
   description: >
@@ -23,7 +24,6 @@ parametres:
       audit,
       simserial,
     ]
-#-----------------------------------------------------------------------------------------------------
 choix:
   sexe: &sexe
     - Homme
@@ -52,7 +52,7 @@ choix:
     - Tiassalé
     - Koro
     - Ouaninou
-#--------------------------------------------------------------------------------------------------------------
+
 questions:
   I:
     titre: DESCRIPTION DE L'ETUDE
@@ -66,13 +66,12 @@ questions:
     object_questionnaire: >
       - Identifier des innovations et technologies générées et diffusées ou non dans le cadre du FCIAD - Identifier les mécanismes de génération et de transfert de ces innovations - Forces et faiblesses de ces mécanismes - Quelques recommandations d'amélioration des mécanismes
 
-
   A:
     titre: >
       A: IDENTIFICATION DE L'ENQUETE
     2: A.1 Date d'enquete (………/05/2023) _date
-    3: A.2 Nom () **
-    4: A.3 Prénoms **
+    3: A.2 Nom () ** $=(py::at_most(2, UPPERCASE))
+    4: A.3 Prénoms ** $=(mxf::NAME_MIN)
     5:
       - A.5 Sexe ()
       - *sexe
@@ -85,8 +84,8 @@ questions:
       - A.9 Département
       - *departs
     10: A.10 Ville/village  ()
-    11a: A.11-a Téléphone ()
-    11b: A-11-b E-mail ()
+    11a: A.11-a Téléphone () $=(mxf::PHONE_CI)
+    11b: A-11-b E-mail () $=(mxf::EMAIL)
     12a: A.12 Chaîne de valeur ()
     12b: Innovation ()
     13: A.13 Structure de vulgarisation ()
@@ -116,7 +115,7 @@ questions:
       - B.4 Avez-vous été d'une manière ou d'une autre associé à l'identification du problème qui a permis de générer l'innovation dont vous êtes bénéficiaire ?
       - *bool
     5: B.5 Si oui, dans quel cadre ?() _sm $[ Votre OPA , Consultation individuelle, autre] $if(${B_4}='Oui')
-    6: Si autre préciser() $if(sm(${B_5}='autre'))
+    6: Si autre préciser() $if(${B_5}='autre')
   # ---
   C:
     titre: >
@@ -144,8 +143,6 @@ questions:
     3:
       - >
         Si oui, pensez-vous qu'elle : () 
-
-
       - - introduit peu de changement sur l'exploitation
         - permet de résoudre un problème sectoriel et a des répercussions sur l'ensemble de l'exploitation
         - implique l'adoption simultanée de diverses techniques cohérentes entre elles
@@ -182,3 +179,4 @@ questions:
     1: G.1      Au vu de tout ce qui précède, quelles recommandations pouvez-vous faire pour l'amélioration du mécanisme de diffusion et de transfert des innovations aux bénéficiaires ? ()
     2: G.2      Selon vous, que faut-il faire pour que les innovations ne soient pas abandonnées après leur adoption par vous après un moment donné ?()
     3: G.3      Que recommandez-vous au FCIAD pour pérenniser ses activités de transfert d'innovation et de technologies ? ()
+
