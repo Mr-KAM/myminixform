@@ -21,7 +21,6 @@ pip install myminixform
 ## Utilisation
 
 Le principe d'utilisation est simple: creer un fichier minixform en yaml le convertir avec minixform en XLSFORM
-
 ```mermaid
 graph TD
   yaml--> myminixform
@@ -186,9 +185,7 @@ questions:
       - *bool
     3:
       - >
-        Si oui, pensez-vous qu'elle : () 
-
-
+        Si oui, pensez-vous qu'elle : (
       - - introduit peu de changement sur l'exploitation
         - permet de résoudre un problème sectoriel et a des répercussions sur l'ensemble de l'exploitation
         - implique l'adoption simultanée de diverses techniques cohérentes entre elles
@@ -347,7 +344,7 @@ Creer ensuite le fichier yaml du formulaire **Template.yaml** et le fichier de s
 from myminixform import *
 print(template, file=open("Template.yaml","w",encoding="utf-8")) #Template est un exemple yaml intégré à myminixform
 form=yaml_form("Template.yaml","utf-8")
-resultat=form.to_xslform("form.xlsx")
+resultat=form.to_xlsform("form.xlsx")
 print(result) # True
 ```
 

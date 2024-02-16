@@ -889,8 +889,7 @@ class yaml_form(Question):
                             name2=name+'_'+str(k)+"_"+str(ligne)
                             #------------------------------
                             #Appel reccursif de la fonction
-                            self.groupe_to_dic(groupe2,name2,repeat)
-                            
+                            self.groupe_to_dic(groupe2,name2,repeat)                 
                 else :
                     #------------------------------
                     #Appel reccursif de la fonction
@@ -930,7 +929,7 @@ class yaml_form(Question):
 
 #===================================================================================================
 #@METHODE POUR CONVERTIR LE FORMULAIRE EN FICHIER EXCEL
-    def to_xslform(self, output):
+    def to_xlsform(self, output):
         """
         Convertie la liste des questions en un DataFrame puis l'enregistre dans un fichier excel
         ---
